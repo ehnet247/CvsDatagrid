@@ -15,13 +15,17 @@ namespace CvsDatagrid.VM
     public class VM_Main : ObservableRecipient
     {
         public ICommand Cmd_OpenFile { get; }
+        public ICommand Cmd_SaveFile { get; }
+        public string? FilePath { get; private set; }
         public DataTable TableData { get; private set; }
         public VM_Main()
         {
+            FilePath = null;
             Cmd_OpenFile = new RelayCommand(OpenFile);
+            Cmd_SaveFile = new RelayCommand(SaveFile);
         }
 
-        public void OpenFile()
+        private void OpenFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (!string.IsNullOrEmpty(AppSettings.Default.InitialPath))
@@ -44,10 +48,13 @@ namespace CvsDatagrid.VM
                     CvsReader cvsReader = new CvsReader(fileName);
                     if (!cvsReader.Error)
                     {
+                        FilePath = fileName;
                         TableData = new DataTable();
                         foreach (string header in cvsReader.Headers)
                         {
-                            TableData.Columns.Add(new DataColumn(header));
+                            var dataColumn = new DataColumn(header);
+                            dataColumn.ColumnName = header;
+                            TableData.Columns.Add(dataColumn);
                         }
                         foreach (string[] row in cvsReader.Rows)
                         {
@@ -55,9 +62,21 @@ namespace CvsDatagrid.VM
                         }
                         OnPropertyChanged(nameof(TableData));
                     }
+                    else
+                    {
+                        FilePath = null;
+                    }
+
                 }
             }
 
+        }
+
+        private void SaveFile()
+        {
+            if (FilePath != null)
+            {
+            }
         }
     }
 }

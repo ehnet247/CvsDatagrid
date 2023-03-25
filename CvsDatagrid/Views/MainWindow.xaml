@@ -10,6 +10,8 @@
     <Window.DataContext>
         <vm:VM_Main />
     </Window.DataContext>
+    <Window.Resources>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -18,11 +20,14 @@
         <DockPanel Grid.Row="0">
             <Button DockPanel.Dock="Left"
                     Content="Open" Command="{Binding Cmd_OpenFile}" Height="30" Width="80"/>
+            <Button DockPanel.Dock="Right"
+                    Content="Save" Command="{Binding Cmd_SaveFile}" Height="30" Width="80"/>
         </DockPanel>
-        <DataGrid 
+        <DataGrid x:Name="DataGrid_Main"
             ItemsSource="{Binding TableData}"
-            Grid.Row="1">
-            
+            AutoGeneratingColumn="DataGrid_Main_AutoGeneratingColumn"
+            Grid.Row="1" Width="400">
+
         </DataGrid>
     </Grid>
 </Window>
